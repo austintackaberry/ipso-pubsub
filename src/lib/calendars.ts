@@ -1,9 +1,8 @@
 import { Event } from "@/src/types";
-import { OAuth2Client } from "google-auth-library";
 import { google } from "googleapis";
 
 import { pool } from "./db";
-import { getOrigin } from "./utils";
+import { getOauthClient } from "./gmail";
 
 export const refreshTokenGoogle = async (refreshToken: string) => {
   const url =
@@ -75,16 +74,11 @@ export const getAccessToken = async (
   return newToken.accessToken;
 };
 
-const oAuth2Client = new OAuth2Client(
-  process.env.GOOGLE_CLIENT_ID,
-  process.env.GOOGLE_CLIENT_SECRET,
-  `${getOrigin()}/api/auth/callback/google`
-);
-
 export const getGoogleEvents = async (
   accessToken: string,
   calendarIds: string[]
 ): Promise<Event[]> => {
+  const oAuth2Client = getOauthClient();
   oAuth2Client.setCredentials({ access_token: accessToken });
   const calendar = google.calendar({ version: "v3", auth: oAuth2Client });
   // Use the map method to call the list method for each calendar ID
@@ -127,6 +121,7 @@ export const getGoogleEvents = async (
 };
 
 export const getGoogleCalendars = async (accessToken: string) => {
+  const oAuth2Client = getOauthClient();
   oAuth2Client.setCredentials({ access_token: accessToken });
   // Create a new Google Calendar API client
   const calendar = google.calendar({ version: "v3", auth: oAuth2Client });
@@ -145,6 +140,7 @@ export const getCalendarsForUser = async (provider: string, userId: string) => {
 };
 
 export const getGoogleScopes = async (accessToken: string) => {
+  const oAuth2Client = getOauthClient();
   const tokenInfo = await oAuth2Client.getTokenInfo(accessToken);
   return tokenInfo.scopes;
 };

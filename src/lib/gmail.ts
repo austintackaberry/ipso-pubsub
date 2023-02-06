@@ -2,12 +2,18 @@ import { google } from "googleapis";
 import { OAuth2Client } from "google-auth-library";
 import { getOrigin } from "./utils";
 
-const getOauthClient = () =>
+export const getOauthClient = () =>
   new OAuth2Client(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
     `${getOrigin()}/api/auth/callback/google`
   );
+
+export const getGmail = (accessToken: string) => {
+  const oAuth2Client = getOauthClient();
+  oAuth2Client.setCredentials({ access_token: accessToken });
+  return google.gmail({ version: "v1", auth: oAuth2Client });
+};
 
 export const watchInbox = async (accessToken: string) => {
   const oAuth2Client = getOauthClient();
@@ -21,7 +27,6 @@ export const watchInbox = async (accessToken: string) => {
     userId: "me",
     requestBody: watchRequest,
   });
-  console.log(res.data);
 };
 
 export const getEmails = async (accessToken: string, historyId: string) => {

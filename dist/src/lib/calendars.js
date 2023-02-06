@@ -1,10 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteAccount = exports.getGoogleScopes = exports.getCalendarsForUser = exports.getGoogleCalendars = exports.getGoogleEvents = exports.getAccessToken = exports.refreshTokenGoogle = void 0;
-const google_auth_library_1 = require("google-auth-library");
 const googleapis_1 = require("googleapis");
 const db_1 = require("./db");
-const utils_1 = require("./utils");
+const gmail_1 = require("./gmail");
 const refreshTokenGoogle = async (refreshToken) => {
     const url = "https://oauth2.googleapis.com/token?" +
         new URLSearchParams({
@@ -62,8 +61,8 @@ const getAccessToken = async (provider, userId) => {
     return newToken.accessToken;
 };
 exports.getAccessToken = getAccessToken;
-const oAuth2Client = new google_auth_library_1.OAuth2Client(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, `${(0, utils_1.getOrigin)()}/api/auth/callback/google`);
 const getGoogleEvents = async (accessToken, calendarIds) => {
+    const oAuth2Client = (0, gmail_1.getOauthClient)();
     oAuth2Client.setCredentials({ access_token: accessToken });
     const calendar = googleapis_1.google.calendar({ version: "v3", auth: oAuth2Client });
     // Use the map method to call the list method for each calendar ID
@@ -102,6 +101,7 @@ const getGoogleEvents = async (accessToken, calendarIds) => {
 };
 exports.getGoogleEvents = getGoogleEvents;
 const getGoogleCalendars = async (accessToken) => {
+    const oAuth2Client = (0, gmail_1.getOauthClient)();
     oAuth2Client.setCredentials({ access_token: accessToken });
     // Create a new Google Calendar API client
     const calendar = googleapis_1.google.calendar({ version: "v3", auth: oAuth2Client });
@@ -116,6 +116,7 @@ const getCalendarsForUser = async (provider, userId) => {
 };
 exports.getCalendarsForUser = getCalendarsForUser;
 const getGoogleScopes = async (accessToken) => {
+    const oAuth2Client = (0, gmail_1.getOauthClient)();
     const tokenInfo = await oAuth2Client.getTokenInfo(accessToken);
     return tokenInfo.scopes;
 };

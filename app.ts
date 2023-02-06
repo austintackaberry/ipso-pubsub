@@ -6,7 +6,7 @@
 // [START run_pubsub_server_setup]
 import express from "express";
 import { getAccessToken } from "./src/lib/calendars";
-import { getEmails } from "./src/lib/gmail";
+import { getEmails, getGmail } from "./src/lib/gmail";
 import { getUserIdByEmail } from "./src/lib/supabase";
 const app = express();
 
@@ -30,7 +30,7 @@ app.post("/", async (req, res) => {
     res.status(400).send(`Bad Request: ${msg}`);
     return;
   }
-
+  console.log("Received valid Pub/Sub message");
   const pubSubMessage = req.body.message;
   if (pubSubMessage.data) {
     const data = JSON.parse(
@@ -44,11 +44,21 @@ app.post("/", async (req, res) => {
     const { emailAddress, historyId } = data;
     const userId = await getUserIdByEmail(emailAddress);
     const accessToken = await getAccessToken("google", userId);
-    const emails = await getEmails(accessToken, historyId);
-    console.log(emails);
+    const history = await getEmails(accessToken, historyId);
+    const messages = (history.history || [])
+      .map((h) => h?.messages || [])
+      .flat();
+    const gmail = getGmail(accessToken);
+    const emails = await Promise.all(
+      messages.map(async (msg) => {
+        const res = await gmail.users.messages.get({
+          userId: "me",
+          id: msg.id || "",
+        });
+        return res.data;
+      })
+    );
   }
-
-  console.log(`Hello!`);
   res.status(204).send();
 });
 app.get("/", (req, res) => {

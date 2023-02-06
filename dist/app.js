@@ -32,6 +32,7 @@ app.post("/", async (req, res) => {
         res.status(400).send(`Bad Request: ${msg}`);
         return;
     }
+    console.log("Received valid Pub/Sub message");
     const pubSubMessage = req.body.message;
     if (pubSubMessage.data) {
         const data = JSON.parse(Buffer.from(pubSubMessage.data, "base64").toString());
@@ -43,10 +44,21 @@ app.post("/", async (req, res) => {
         const { emailAddress, historyId } = data;
         const userId = await (0, supabase_1.getUserIdByEmail)(emailAddress);
         const accessToken = await (0, calendars_1.getAccessToken)("google", userId);
-        const emails = await (0, gmail_1.getEmails)(accessToken, historyId);
-        console.log(emails);
+        const history = await (0, gmail_1.getEmails)(accessToken, historyId);
+        const messages = (history.history || [])
+            .map((h) => (h === null || h === void 0 ? void 0 : h.messages) || [])
+            .flat();
+        const gmail = (0, gmail_1.getGmail)(accessToken);
+        const emails = await Promise.all(messages.map(async (msg) => {
+            const res = await gmail.users.messages.get({
+                userId: "me",
+                id: msg.id || "",
+            });
+            console.log(JSON.stringify(res));
+            return res.data;
+        }));
+        console.log(JSON.stringify(emails, null, 2));
     }
-    console.log(`Hello!`);
     res.status(204).send();
 });
 app.get("/", (req, res) => {

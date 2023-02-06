@@ -26,7 +26,7 @@ const runCode = async () => {
 
   for (let index = 0; index < userIds.length; index++) {
     const userId = userIds[index];
-    console.log("Getting access token");
+    console.log(`Getting access token for userId: ${userId}`);
     const accessToken = await getAccessToken("google", userId);
     console.log("Watching inbox");
     await watchInbox(accessToken);

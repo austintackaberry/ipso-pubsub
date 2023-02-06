@@ -25,7 +25,7 @@ const runCode = async () => {
     const userIds = await (0, supabase_1.getAllUserIds)();
     for (let index = 0; index < userIds.length; index++) {
         const userId = userIds[index];
-        console.log("Getting access token");
+        console.log(`Getting access token for userId: ${userId}`);
         const accessToken = await (0, calendars_1.getAccessToken)("google", userId);
         console.log("Watching inbox");
         await (0, gmail_1.watchInbox)(accessToken);
