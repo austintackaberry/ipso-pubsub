@@ -1,9 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getLangPrompt = exports.getPrompt = void 0;
-const luxon_1 = require("luxon");
-const getPrompt = (email) => {
-    return `Email: hey, how are you? just reaching out to see if you're interested in buying my product
+import { DateTime } from "luxon";
+
+export const getPrompt = (email: string) => {
+  return `Email: hey, how are you? just reaching out to see if you're interested in buying my product
 This email warrants a response that includes offering times to meet (yes or no): no
 
 Email: hi, we should catch up. how about next week?
@@ -18,8 +16,11 @@ This email warrants a response that includes offering times to meet (yes or no):
 Email: ${email}
 This email warrants a response that includes offering times to meet (yes or no):`;
 };
-exports.getPrompt = getPrompt;
-const getLangPrompt = (q, d) => `Question: Today is Monday January 23, 2023. Want to get coffee some time next week? I'm busy on Tuesday.
+
+export const getLangPrompt = (
+  q: string,
+  d: Date
+) => `Question: Today is Monday January 23, 2023. Want to get coffee some time next week? I'm busy on Tuesday.
   
   Are follow up questions needed here: Yes.
   Follow up: When is next week?
@@ -177,9 +178,8 @@ const getLangPrompt = (q, d) => `Question: Today is Monday January 23, 2023. Wan
   So the final answer in English is: Thursday April 20, 2023 1PM to 3PM or Friday April 21, 2023 8AM to 11AM or Monday April 24, 2023 to Sunday April 30, 2023 12PM to 5PM
   And the final answer in json is: [{"start_date": "April 20, 2023", "end_date": "April 20, 2023", "start_time": "1:00 PM", "end_time": "3:00 PM"}, {"start_date": "April 21, 2023", "end_date": "April 21, 2023", "start_time": "8:00 AM", "end_time": "11:00 AM"}, {"start_date": "April 24, 2023", "end_date": "April 30, 2023", "start_time": "12:00 PM", "end_time": "5:00 PM"}]
   
-  Question: Today is ${luxon_1.DateTime.fromJSDate(d)
+  Question: Today is ${DateTime.fromJSDate(d)
     .setZone("America/Los_Angeles")
     .toFormat("cccc LLLL d, yyyy")}. ${q}
   
   `;
-exports.getLangPrompt = getLangPrompt;

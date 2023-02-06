@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { EmailDb } from "../types";
 
 const nextSupabase = createClient(
   process.env.SUPABASE_URL || "",
@@ -6,6 +7,16 @@ const nextSupabase = createClient(
   {
     db: {
       schema: "next_auth",
+    },
+  }
+);
+
+const publicSupabase = createClient(
+  process.env.SUPABASE_URL || "",
+  process.env.SUPABASE_SERVICE_ROLE_KEY || "",
+  {
+    db: {
+      schema: "public",
     },
   }
 );
@@ -25,4 +36,10 @@ export const getUserIdByEmail = async (email: string): Promise<string> => {
     return "";
   }
   return res.data[0].id;
+};
+
+// create new email record using publicSupabase
+
+export const createEmailRecord = async (email: EmailDb) => {
+  return publicSupabase.from("emails").insert([email]);
 };

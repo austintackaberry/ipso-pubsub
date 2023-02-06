@@ -7,7 +7,10 @@
 import express from "express";
 import { getAccessToken } from "./src/lib/calendars";
 import { getEmails, getGmail } from "./src/lib/gmail";
-import { getUserIdByEmail } from "./src/lib/supabase";
+import { getIsScheduleRequest, getGpt } from "./src/lib/openai";
+import { toEmailDb } from "./src/lib/schema";
+import { createEmailRecord, getUserIdByEmail } from "./src/lib/supabase";
+import { DateAnswer } from "./src/types";
 const app = express();
 
 // This middleware is available in Express v4.16.0 onwards
@@ -49,12 +52,35 @@ app.post("/", async (req, res) => {
       .map((h) => h?.messages || [])
       .flat();
     const gmail = getGmail(accessToken);
-    const emails = await Promise.all(
+    await Promise.all(
       messages.map(async (msg) => {
         const res = await gmail.users.messages.get({
           userId: "me",
           id: msg.id || "",
         });
+        console.log("Got email", res.data);
+        console.log("Determining if schedule request");
+        const isScheduleRequest = await getIsScheduleRequest(res.data.snippet);
+        console.log("isScheduleRequest", isScheduleRequest);
+        let gptAnswer: DateAnswer[] = [];
+        if (isScheduleRequest) {
+          console.log("Found scheduling request, running GPT-3");
+          gptAnswer = await getGpt(res.data.snippet || "");
+        }
+        const emailDb = toEmailDb({
+          userId,
+          emailId: res.data.id || "",
+          threadId: res.data.threadId || "",
+          body: res.data.snippet || "",
+          subject:
+            res.data.payload?.headers?.find((h) => h.name === "Subject")
+              ?.value || "",
+          isScheduleRequest,
+          gptAnswer,
+        });
+        console.log("Saving email to db", emailDb);
+        const emailRes = await createEmailRecord(emailDb);
+        console.log("Saved email to db", emailRes);
         return res.data;
       })
     );
