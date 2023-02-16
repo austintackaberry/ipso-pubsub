@@ -28,7 +28,7 @@ const runCode = async () => {
         console.log(`Getting access token for userId: ${userId}`);
         const accessToken = await (0, calendars_1.getAccessToken)("google", userId);
         console.log("Watching inbox");
-        await (0, gmail_1.watchInbox)(accessToken);
+        await (0, gmail_1.watchInbox)(accessToken, userId);
     }
     app_1.default.listen(PORT, () => console.log(`ipso-pubsub listening on port ${PORT}`));
 };

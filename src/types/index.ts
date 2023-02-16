@@ -37,3 +37,13 @@ export interface EmailDb {
   is_schedule_request: boolean;
   gpt_answer: string;
 }
+
+export interface DateRange {
+  start: Date;
+  end: Date;
+}
+
+export interface DateTimeRange {
+  start: DateTime;
+  end: DateTime;
+}

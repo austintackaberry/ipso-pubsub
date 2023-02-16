@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getGpt = exports.getIsScheduleRequest = void 0;
+exports.getRawGpt = exports.getGpt = exports.getIsScheduleRequest = void 0;
 const openai_1 = require("openai");
 const prompt_1 = require("./prompt");
 const utils_1 = require("./utils");
@@ -41,3 +41,16 @@ const getGpt = async (email) => {
     return (0, utils_1.toDateAnswer)(jsonResult);
 };
 exports.getGpt = getGpt;
+const getRawGpt = async (prompt, splitText) => {
+    var _a;
+    const response = await openai.createCompletion({
+        model: "text-davinci-003",
+        prompt,
+        temperature: 0,
+        max_tokens: 350,
+        top_p: 1,
+    });
+    const resultArr = (_a = response.data.choices[0].text) === null || _a === void 0 ? void 0 : _a.split(splitText);
+    return resultArr === null || resultArr === void 0 ? void 0 : resultArr[resultArr.length - 1];
+};
+exports.getRawGpt = getRawGpt;

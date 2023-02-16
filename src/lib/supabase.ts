@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { EmailDb } from "../types";
 
-const nextSupabase = createClient(
+export const nextSupabase = createClient(
   process.env.SUPABASE_URL || "",
   process.env.SUPABASE_SERVICE_ROLE_KEY || "",
   {
@@ -11,7 +11,7 @@ const nextSupabase = createClient(
   }
 );
 
-const publicSupabase = createClient(
+export const publicSupabase = createClient(
   process.env.SUPABASE_URL || "",
   process.env.SUPABASE_SERVICE_ROLE_KEY || "",
   {

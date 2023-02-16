@@ -43,3 +43,15 @@ export const getGpt = async (email: string) => {
   const jsonResult = JSON.parse(result || "") as DateTextAnswer[];
   return toDateAnswer(jsonResult);
 };
+
+export const getRawGpt = async (prompt: string, splitText: string) => {
+  const response = await openai.createCompletion({
+    model: "text-davinci-003",
+    prompt,
+    temperature: 0,
+    max_tokens: 350,
+    top_p: 1,
+  });
+  const resultArr = response.data.choices[0].text?.split(splitText);
+  return resultArr?.[resultArr.length - 1];
+};
