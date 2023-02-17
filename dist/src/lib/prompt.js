@@ -293,6 +293,22 @@ Hey Jill,
 Tomorrow doesn't work for me. Can we try some other time?
 ---Austin's response ends here---
 
+Today is Thursday February 16, 2023.
+---Email thread starts here---
+Jill Wright: hey what is your availability next week? would like to fit in our 1-1. maybe some time later in the week?
+---Email thread ends here---
+Austin Porter is available these times: Thursday February 23, 2023 11AM to 3PM, Thursday February 23, 2023 5PM to 6PM, Friday February 24, 2023 3PM to 6PM
+We want to figure out a reasonable response for Austin given the thread above and Austin's availability with the ultimate goal of scheduling a meeting.
+---Austin's response starts here---
+Hey Jill,
+
+I'm available next week at these times:
+- Thursday 11AM-3PM PST and 5PM-6PM PST
+- Friday 3PM-6PM PST
+
+Let me know if any of those times work for you.
+---Austin's response ends here---
+
 Today is ${luxon_1.DateTime.fromJSDate(d)
         .setZone("America/Los_Angeles")
         .toFormat("cccc LLLL d, yyyy")}.

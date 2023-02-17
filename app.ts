@@ -202,7 +202,7 @@ app.post("/", async (req, res) => {
       console.log("save reply to db");
       const { data: emailData, error: emailError } = await publicSupabase
         .from("emails")
-        .update({ reply, times })
+        .update({ reply })
         .eq("email_id", emailId);
       if (emailError) {
         console.error("Error saving reply to db", emailError);
