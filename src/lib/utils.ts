@@ -92,42 +92,51 @@ export const findTimes = (
   }));
 };
 
-// Aggregate times into a list of DateRanges
-// Example input is a list of 1hr date ranges that may be adjacent
-// Example output is a list of varying time date ranges that are not adjacent
-export const aggregateTimes = (dateRanges: DateRange[]): DateRange[] => {
-  const sortedDateRanges = dateRanges.sort((a, b) => {
-    const aStart = DateTime.fromJSDate(a.start);
-    const bStart = DateTime.fromJSDate(b.start);
-    if (aStart < bStart) {
-      return -1;
-    }
-    if (aStart > bStart) {
-      return 1;
-    }
-    return 0;
-  });
+export const shouldCombineDatetimes = (a: DateRange, b: DateRange): boolean => {
+  return (
+    (b.start >= a.start && b.start <= a.end) ||
+    (b.end >= a.start && b.end <= a.end) ||
+    (b.start <= a.start && b.end >= a.end)
+  );
+};
 
-  const aggregatedDateRanges: DateRange[] = [];
-  let currentRange: DateRange | null = null;
-  sortedDateRanges.forEach((dr) => {
-    if (!currentRange) {
-      currentRange = dr;
-      return;
+export const doneAggregating = (availability: DateRange[]): boolean => {
+  let res = true;
+  const sortedAvailability = availability.sort((a, b) =>
+    a.start < a.end ? -1 : 1
+  );
+  return sortedAvailability.every((as, i) => {
+    const next = sortedAvailability[i + 1];
+    if (!next) {
+      return true;
     }
-    const currentRangeEnd = DateTime.fromJSDate(currentRange.end);
-    const drStart = DateTime.fromJSDate(dr.start);
-    if (drStart <= currentRangeEnd) {
-      currentRange.end = dr.end;
-    } else {
-      aggregatedDateRanges.push(currentRange);
-      currentRange = dr;
-    }
+    return !shouldCombineDatetimes(as, next);
   });
-  if (currentRange) {
-    aggregatedDateRanges.push(currentRange);
+};
+
+export const combineDateRanges = (a: DateRange, b: DateRange): DateRange => {
+  const start = a.start < b.start ? a.start : b.start;
+  const end = a.end > b.end ? a.end : b.end;
+  return { start, end };
+};
+
+export const aggregateTimes = (dr: DateRange[]): DateRange[] => {
+  let aggregatedDateRange = dr.sort((a, b) => (a.start < a.end ? -1 : 1));
+  while (!doneAggregating(aggregatedDateRange)) {
+    for (let i = 0; i < aggregatedDateRange.length - 1; i++) {
+      const first = aggregatedDateRange[i];
+      const second = aggregatedDateRange[i + 1];
+      if (first && second && shouldCombineDatetimes(first, second)) {
+        const dateRange = combineDateRanges(first, second);
+        aggregatedDateRange = [
+          ...aggregatedDateRange.slice(0, i),
+          dateRange,
+          ...aggregatedDateRange.slice(i + 2),
+        ];
+      }
+    }
   }
-  return aggregatedDateRanges;
+  return aggregatedDateRange;
 };
 
 // Create draft email reply given access token, thread id, email address, and subject

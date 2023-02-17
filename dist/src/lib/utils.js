@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getGmailThread = exports.createGmailDraft = exports.aggregateTimes = exports.findTimes = exports.toDateAnswer = exports.getOrigin = void 0;
+exports.getGmailThread = exports.createGmailDraft = exports.aggregateTimes = exports.combineDateRanges = exports.doneAggregating = exports.shouldCombineDatetimes = exports.findTimes = exports.toDateAnswer = exports.getOrigin = void 0;
 const luxon_1 = require("luxon");
 const gmail_1 = require("./gmail");
 const getOrigin = () => {
@@ -63,42 +63,47 @@ const findTimes = (events, dateAnswers) => {
     }));
 };
 exports.findTimes = findTimes;
-// Aggregate times into a list of DateRanges
-// Example input is a list of 1hr date ranges that may be adjacent
-// Example output is a list of varying time date ranges that are not adjacent
-const aggregateTimes = (dateRanges) => {
-    const sortedDateRanges = dateRanges.sort((a, b) => {
-        const aStart = luxon_1.DateTime.fromJSDate(a.start);
-        const bStart = luxon_1.DateTime.fromJSDate(b.start);
-        if (aStart < bStart) {
-            return -1;
+const shouldCombineDatetimes = (a, b) => {
+    return ((b.start >= a.start && b.start <= a.end) ||
+        (b.end >= a.start && b.end <= a.end) ||
+        (b.start <= a.start && b.end >= a.end));
+};
+exports.shouldCombineDatetimes = shouldCombineDatetimes;
+const doneAggregating = (availability) => {
+    let res = true;
+    const sortedAvailability = availability.sort((a, b) => a.start < a.end ? -1 : 1);
+    return sortedAvailability.every((as, i) => {
+        const next = sortedAvailability[i + 1];
+        if (!next) {
+            return true;
         }
-        if (aStart > bStart) {
-            return 1;
-        }
-        return 0;
+        return !(0, exports.shouldCombineDatetimes)(as, next);
     });
-    const aggregatedDateRanges = [];
-    let currentRange = null;
-    sortedDateRanges.forEach((dr) => {
-        if (!currentRange) {
-            currentRange = dr;
-            return;
+};
+exports.doneAggregating = doneAggregating;
+const combineDateRanges = (a, b) => {
+    const start = a.start < b.start ? a.start : b.start;
+    const end = a.end > b.end ? a.end : b.end;
+    return { start, end };
+};
+exports.combineDateRanges = combineDateRanges;
+const aggregateTimes = (dr) => {
+    let aggregatedDateRange = dr.sort((a, b) => (a.start < a.end ? -1 : 1));
+    while (!(0, exports.doneAggregating)(aggregatedDateRange)) {
+        for (let i = 0; i < aggregatedDateRange.length - 1; i++) {
+            const first = aggregatedDateRange[i];
+            const second = aggregatedDateRange[i + 1];
+            if (first && second && (0, exports.shouldCombineDatetimes)(first, second)) {
+                const dateRange = (0, exports.combineDateRanges)(first, second);
+                aggregatedDateRange = [
+                    ...aggregatedDateRange.slice(0, i),
+                    dateRange,
+                    ...aggregatedDateRange.slice(i + 2),
+                ];
+            }
         }
-        const currentRangeEnd = luxon_1.DateTime.fromJSDate(currentRange.end);
-        const drStart = luxon_1.DateTime.fromJSDate(dr.start);
-        if (drStart <= currentRangeEnd) {
-            currentRange.end = dr.end;
-        }
-        else {
-            aggregatedDateRanges.push(currentRange);
-            currentRange = dr;
-        }
-    });
-    if (currentRange) {
-        aggregatedDateRanges.push(currentRange);
     }
-    return aggregatedDateRanges;
+    return aggregatedDateRange;
 };
 exports.aggregateTimes = aggregateTimes;
 // Create draft email reply given access token, thread id, email address, and subject
