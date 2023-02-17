@@ -280,6 +280,18 @@ Hey Jill,
 I'm not available next week before 10am. Can we try for the following week?
 ---Austin's response ends here---
 
+Today is Friday February 17, 2023.
+---Email thread starts here---
+Haefa Mansour: Let’s get a 1:1 on the calendar. I’m open Tuesday from 8am-9am and 1-1:30pm and Wednesday from 3-3:30pm. Do any of those times work for you?
+---Email thread ends here---
+Austin Porter is available these times: Tuesday February 21, 2023 8AM to 9AM, Wednesday February 22, 2023 3PM to 3:30PM
+We want to figure out a reasonable response for Austin given the thread above and Austin's availability with the ultimate goal of scheduling a meeting.
+---Austin's response starts here---
+Hey Haefa,
+
+Tuesday at 8am works for me. Let's meet then.
+---Austin's response ends here---
+
 Today is Monday June 4, 2023.
 ---Email thread starts here---
 Jill Wright: Hey Austin, when are you availabile this week? Trying to find time to chat about the new project.

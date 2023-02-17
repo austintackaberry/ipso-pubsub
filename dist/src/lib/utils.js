@@ -43,9 +43,9 @@ const findTimes = (events, dateAnswers) => {
         while (dtCurrent <= dtEnd) {
             potentialOptions.push({
                 start: dtCurrent,
-                end: dtCurrent.plus({ hours: 1 }),
+                end: dtCurrent.plus({ minutes: 30 }),
             });
-            dtCurrent = dtCurrent.plus({ hours: 1 });
+            dtCurrent = dtCurrent.plus({ minutes: 30 });
         }
     });
     const dateRanges = potentialOptions.filter((po) => {
@@ -53,7 +53,7 @@ const findTimes = (events, dateAnswers) => {
             const eventStart = luxon_1.DateTime.fromJSDate(e.start);
             const eventEnd = luxon_1.DateTime.fromJSDate(e.end);
             return ((po.start >= eventStart && po.start < eventEnd) ||
-                (po.end >= eventStart && po.end < eventEnd) ||
+                (po.end > eventStart && po.end <= eventEnd) ||
                 (po.start < eventStart && po.end > eventEnd));
         });
     });

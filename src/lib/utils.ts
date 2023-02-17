@@ -70,9 +70,9 @@ export const findTimes = (
     while (dtCurrent <= dtEnd) {
       potentialOptions.push({
         start: dtCurrent,
-        end: dtCurrent.plus({ hours: 1 }),
+        end: dtCurrent.plus({ minutes: 30 }),
       });
-      dtCurrent = dtCurrent.plus({ hours: 1 });
+      dtCurrent = dtCurrent.plus({ minutes: 30 });
     }
   });
   const dateRanges = potentialOptions.filter((po) => {
@@ -81,7 +81,7 @@ export const findTimes = (
       const eventEnd = DateTime.fromJSDate(e.end);
       return (
         (po.start >= eventStart && po.start < eventEnd) ||
-        (po.end >= eventStart && po.end < eventEnd) ||
+        (po.end > eventStart && po.end <= eventEnd) ||
         (po.start < eventStart && po.end > eventEnd)
       );
     });
