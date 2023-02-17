@@ -292,6 +292,30 @@ Hey Haefa,
 Tuesday at 8am works for me. Let's meet then.
 ---Austin's response ends here---
 
+Today is Friday February 17, 2023.
+---Email thread starts here---
+Haefa Mansour: We should set up a time to chat. I’m open Tuesday from 1-1:30pm and Wednesday from 3-3:30pm. Do any of those times work for you?
+---Email thread ends here---
+Austin Porter is available these times: Tuesday February 21, 2023 1PM to 1:30PM, Wednesday February 22, 2023 3PM to 3:30PM
+We want to figure out a reasonable response for Austin given the thread above and Austin's availability with the ultimate goal of scheduling a meeting.
+---Austin's response starts here---
+Hey Haefa,
+
+Tuesday at 1pm works for me. Let's meet then.
+---Austin's response ends here---
+
+Today is Monday February 27, 2023.
+---Email thread starts here---
+Haefa Mansour: Do you want to grab coffee tomorrow? I'm free 10-11am and 1-2pm.
+---Email thread ends here---
+Austin Brown is available these times: Tuesday February 28, 2023 10AM to 11AM, Wednesday February 28, 2023 1PM to 2PM
+We want to figure out a reasonable response for Austin given the thread above and Austin's availability with the ultimate goal of scheduling a meeting.
+---Austin's response starts here---
+Hey Haefa,
+
+Tuesday at 10am sounds perfect. See you then.
+---Austin's response ends here---
+
 Today is Monday June 4, 2023.
 ---Email thread starts here---
 Jill Wright: Hey Austin, when are you availabile this week? Trying to find time to chat about the new project.
