@@ -86,10 +86,15 @@ export const findTimes = (
       );
     });
   });
-  return dateRanges.map((dr) => ({
-    start: dr.start.toJSDate(),
-    end: dr.end.toJSDate(),
-  }));
+  // Filter out date ranges that are on the weekend
+  return dateRanges
+    .filter((dr) => {
+      return dr.start.weekday <= 5;
+    })
+    .map((dr) => ({
+      start: dr.start.toJSDate(),
+      end: dr.end.toJSDate(),
+    }));
 };
 
 export const shouldCombineDatetimes = (a: DateRange, b: DateRange): boolean => {
