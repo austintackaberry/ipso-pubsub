@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const promptable_1 = require("promptable");
-const prompt_1 = require("./prompt");
 const apiKey = process.env.OPENAI_API_KEY || "missing";
 async function run() {
     const traces = [];
@@ -12,10 +11,10 @@ async function run() {
         },
     });
     const openai = new promptable_1.OpenAI(apiKey);
-    const isScheduleRequestPrompt = new promptable_1.Prompt(prompt_1.isScheduleRequestPromptTemplate, [
+    const isScheduleRequestPrompt = new promptable_1.Prompt(isScheduleRequestPromptTemplate, [
         "email",
     ]);
-    const toStructuredJsonPrompt = new promptable_1.Prompt(prompt_1.toStructuredJsonPromptTemplate, [
+    const toStructuredJsonPrompt = new promptable_1.Prompt(toStructuredJsonPromptTemplate, [
         "date",
         "text",
     ]);

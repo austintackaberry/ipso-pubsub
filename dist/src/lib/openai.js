@@ -21,7 +21,6 @@ const getIsScheduleRequest = async (email) => {
         stop: "\n",
     });
     const ans = response.data.choices[0].text;
-    console.log("isScheduleRequest answer:", ans);
     return (ans || "").includes("yes") ? true : false;
 };
 exports.getIsScheduleRequest = getIsScheduleRequest;
@@ -38,6 +37,7 @@ const getGpt = async (email) => {
     const resultArr = (_a = response.data.choices[0].text) === null || _a === void 0 ? void 0 : _a.split("And the final answer in json is: ");
     const result = resultArr === null || resultArr === void 0 ? void 0 : resultArr[resultArr.length - 1];
     const jsonResult = JSON.parse(result || "");
+    console.log(JSON.stringify({ jsonResult }));
     return (0, utils_1.toDateAnswer)(jsonResult);
 };
 exports.getGpt = getGpt;

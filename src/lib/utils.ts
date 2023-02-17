@@ -18,7 +18,8 @@ export const getOrigin = () => {
 export const toDateAnswer = (
   dateTextAnswers: DateTextAnswer[]
 ): DateAnswer[] => {
-  return dateTextAnswers
+  console.log(JSON.stringify({ dateTextAnswers }));
+  const dateAnswer = dateTextAnswers
     .map((dta) => {
       const {
         start_date,
@@ -52,6 +53,8 @@ export const toDateAnswer = (
       return ans;
     })
     .flat();
+  console.log(JSON.stringify({ dateAnswer }));
+  return dateAnswer;
 };
 
 // findTimes takes calendar events and date answers and returns a list of
@@ -214,11 +217,10 @@ export const getGmailThread = async (
   const emails = messages
     .map((m) => {
       const email = m.payload?.headers?.find((h) => h.name === "From")?.value;
-      const body = m.payload?.parts?.find((p) => p.mimeType === "text/html")
-        ?.body?.data;
+      const body = m.snippet;
       return {
         email,
-        body: Buffer.from(body || "", "base64").toString(),
+        body,
       };
     })
     .map((e) => {

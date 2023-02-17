@@ -11,7 +11,8 @@ const getOrigin = () => {
 };
 exports.getOrigin = getOrigin;
 const toDateAnswer = (dateTextAnswers) => {
-    return dateTextAnswers
+    console.log(JSON.stringify({ dateTextAnswers }));
+    const dateAnswer = dateTextAnswers
         .map((dta) => {
         const { start_date, end_date, start_time = "8:00 AM", end_time = "5:00 PM", } = dta;
         const ans = [];
@@ -28,6 +29,8 @@ const toDateAnswer = (dateTextAnswers) => {
         return ans;
     })
         .flat();
+    console.log(JSON.stringify({ dateAnswer }));
+    return dateAnswer;
 };
 exports.toDateAnswer = toDateAnswer;
 // findTimes takes calendar events and date answers and returns a list of
@@ -163,12 +166,12 @@ const getGmailThread = async (accessToken, threadId, email) => {
     }, { [email]: "Austin Tackaberry" });
     const emails = messages
         .map((m) => {
-        var _a, _b, _c, _d, _e, _f, _g;
+        var _a, _b, _c;
         const email = (_c = (_b = (_a = m.payload) === null || _a === void 0 ? void 0 : _a.headers) === null || _b === void 0 ? void 0 : _b.find((h) => h.name === "From")) === null || _c === void 0 ? void 0 : _c.value;
-        const body = (_g = (_f = (_e = (_d = m.payload) === null || _d === void 0 ? void 0 : _d.parts) === null || _e === void 0 ? void 0 : _e.find((p) => p.mimeType === "text/html")) === null || _f === void 0 ? void 0 : _f.body) === null || _g === void 0 ? void 0 : _g.data;
+        const body = m.snippet;
         return {
             email,
-            body: Buffer.from(body || "", "base64").toString(),
+            body,
         };
     })
         .map((e) => {

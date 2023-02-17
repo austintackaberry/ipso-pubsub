@@ -96,11 +96,13 @@ app.post("/", async (req, res) => {
             console.log("Determining if schedule request");
             const isScheduleRequest = await (0, openai_1.getIsScheduleRequest)(res.data.snippet);
             console.log("isScheduleRequest", isScheduleRequest);
-            let gptAnswer = [];
-            if (isScheduleRequest) {
-                console.log("Found scheduling request, running GPT-3");
-                gptAnswer = await (0, openai_1.getGpt)(res.data.snippet || "");
+            if (!isScheduleRequest) {
+                console.log("Not a scheduling request, skipping...");
+                continue;
             }
+            console.log("Found scheduling request, running GPT-3");
+            const gptAnswer = await (0, openai_1.getGpt)(res.data.snippet || "");
+            console.log(JSON.stringify({ gptAnswer }));
             // get from email address
             const fromEmail = (_d = (_c = (_b = res.data.payload) === null || _b === void 0 ? void 0 : _b.headers) === null || _c === void 0 ? void 0 : _c.find((h) => h.name === "From")) === null || _d === void 0 ? void 0 : _d.value;
             const emailId = res.data.id || "";
@@ -130,6 +132,7 @@ app.post("/", async (req, res) => {
             console.log("Getting calendar data");
             const events = await getCalendarData(userId, accessToken);
             console.log("finding times");
+            console.log(JSON.stringify({ events, gptAnswer }));
             const times = (0, utils_1.findTimes)(events, gptAnswer);
             console.log("received times", JSON.stringify({ times }));
             console.log("aggregating times");
@@ -146,7 +149,8 @@ app.post("/", async (req, res) => {
                 .join("\n");
             console.log("Getting gmail thread");
             const emailThread = await (0, utils_1.getGmailThread)(accessToken, res.data.threadId || "", emailAddress);
-            console.log("Received email thread", JSON.stringify({ emailThread }));
+            console.log("Received email thread");
+            console.log(JSON.stringify({ emailThread }));
             console.log("Getting email to send prompt");
             const emailToSendPrompt = (0, prompt_1.getEmailToSendPrompt)(new Date(), formattedTimes, emailThread);
             console.log("get raw gpt");
@@ -159,7 +163,7 @@ app.post("/", async (req, res) => {
             console.log("save reply to db");
             const { data: emailData, error: emailError } = await supabase_1.publicSupabase
                 .from("emails")
-                .update({ reply })
+                .update({ reply, times })
                 .eq("email_id", emailId);
             if (emailError) {
                 console.error("Error saving reply to db", emailError);

@@ -26,7 +26,6 @@ import {
   findTimes,
   getGmailThread,
 } from "./src/lib/utils";
-import { DateAnswer } from "./src/types";
 const app = express();
 
 const getCalendarData = async (userId: string, accessToken: string) => {
@@ -110,11 +109,13 @@ app.post("/", async (req, res) => {
       console.log("Determining if schedule request");
       const isScheduleRequest = await getIsScheduleRequest(res.data.snippet);
       console.log("isScheduleRequest", isScheduleRequest);
-      let gptAnswer: DateAnswer[] = [];
-      if (isScheduleRequest) {
-        console.log("Found scheduling request, running GPT-3");
-        gptAnswer = await getGpt(res.data.snippet || "");
+      if (!isScheduleRequest) {
+        console.log("Not a scheduling request, skipping...");
+        continue;
       }
+      console.log("Found scheduling request, running GPT-3");
+      const gptAnswer = await getGpt(res.data.snippet || "");
+      console.log(JSON.stringify({ gptAnswer }));
       // get from email address
       const fromEmail = res.data.payload?.headers?.find(
         (h) => h.name === "From"
@@ -149,6 +150,7 @@ app.post("/", async (req, res) => {
       console.log("Getting calendar data");
       const events = await getCalendarData(userId, accessToken);
       console.log("finding times");
+      console.log(JSON.stringify({ events, gptAnswer }));
       const times = findTimes(events, gptAnswer);
       console.log("received times", JSON.stringify({ times }));
       console.log("aggregating times");
@@ -172,7 +174,8 @@ app.post("/", async (req, res) => {
         res.data.threadId || "",
         emailAddress
       );
-      console.log("Received email thread", JSON.stringify({ emailThread }));
+      console.log("Received email thread");
+      console.log(JSON.stringify({ emailThread }));
       console.log("Getting email to send prompt");
       const emailToSendPrompt = getEmailToSendPrompt(
         new Date(),
@@ -198,7 +201,7 @@ app.post("/", async (req, res) => {
       console.log("save reply to db");
       const { data: emailData, error: emailError } = await publicSupabase
         .from("emails")
-        .update({ reply })
+        .update({ reply, times })
         .eq("email_id", emailId);
       if (emailError) {
         console.error("Error saving reply to db", emailError);

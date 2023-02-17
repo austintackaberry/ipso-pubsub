@@ -23,7 +23,6 @@ export const getIsScheduleRequest = async (
     stop: "\n",
   });
   const ans = response.data.choices[0].text;
-  console.log("isScheduleRequest answer:", ans);
   return (ans || "").includes("yes") ? true : false;
 };
 
@@ -41,6 +40,7 @@ export const getGpt = async (email: string) => {
   );
   const result = resultArr?.[resultArr.length - 1];
   const jsonResult = JSON.parse(result || "") as DateTextAnswer[];
+  console.log(JSON.stringify({ jsonResult }));
   return toDateAnswer(jsonResult);
 };
 
