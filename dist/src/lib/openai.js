@@ -50,6 +50,7 @@ const getRawGpt = async (prompt, splitText) => {
         max_tokens: 350,
         top_p: 1,
     });
+    console.log(JSON.stringify(response.data.choices));
     const resultArr = (_a = response.data.choices[0].text) === null || _a === void 0 ? void 0 : _a.split(splitText);
     return resultArr === null || resultArr === void 0 ? void 0 : resultArr[resultArr.length - 1];
 };

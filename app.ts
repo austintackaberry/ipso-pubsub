@@ -106,13 +106,13 @@ app.post("/", async (req, res) => {
       }
       console.log("Got email");
       console.log(res.data.snippet);
-      console.log("Determining if schedule request");
-      const isScheduleRequest = await getIsScheduleRequest(res.data.snippet);
-      console.log("isScheduleRequest", isScheduleRequest);
-      if (!isScheduleRequest) {
-        console.log("Not a scheduling request, skipping...");
-        continue;
-      }
+      // console.log("Determining if schedule request");
+      // const isScheduleRequest = await getIsScheduleRequest(res.data.snippet);
+      // console.log("isScheduleRequest", isScheduleRequest);
+      // if (!isScheduleRequest) {
+      //   console.log("Not a scheduling request, skipping...");
+      //   continue;
+      // }
       console.log("Found scheduling request, running GPT-3");
       const gptAnswer = await getGpt(res.data.snippet || "");
       console.log(JSON.stringify({ gptAnswer }));
@@ -149,7 +149,7 @@ app.post("/", async (req, res) => {
         subject:
           res.data.payload?.headers?.find((h) => h.name === "Subject")?.value ||
           "",
-        isScheduleRequest,
+        isScheduleRequest: true,
         gptAnswer,
         times: aggregatedTimes,
       });

@@ -52,6 +52,7 @@ export const getRawGpt = async (prompt: string, splitText: string) => {
     max_tokens: 350,
     top_p: 1,
   });
+  console.log(JSON.stringify(response.data.choices));
   const resultArr = response.data.choices[0].text?.split(splitText);
   return resultArr?.[resultArr.length - 1];
 };

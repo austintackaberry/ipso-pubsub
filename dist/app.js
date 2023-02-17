@@ -93,13 +93,13 @@ app.post("/", async (req, res) => {
             }
             console.log("Got email");
             console.log(res.data.snippet);
-            console.log("Determining if schedule request");
-            const isScheduleRequest = await (0, openai_1.getIsScheduleRequest)(res.data.snippet);
-            console.log("isScheduleRequest", isScheduleRequest);
-            if (!isScheduleRequest) {
-                console.log("Not a scheduling request, skipping...");
-                continue;
-            }
+            // console.log("Determining if schedule request");
+            // const isScheduleRequest = await getIsScheduleRequest(res.data.snippet);
+            // console.log("isScheduleRequest", isScheduleRequest);
+            // if (!isScheduleRequest) {
+            //   console.log("Not a scheduling request, skipping...");
+            //   continue;
+            // }
             console.log("Found scheduling request, running GPT-3");
             const gptAnswer = await (0, openai_1.getGpt)(res.data.snippet || "");
             console.log(JSON.stringify({ gptAnswer }));
@@ -131,7 +131,7 @@ app.post("/", async (req, res) => {
                 body: res.data.snippet || "",
                 subject: ((_g = (_f = (_e = res.data.payload) === null || _e === void 0 ? void 0 : _e.headers) === null || _f === void 0 ? void 0 : _f.find((h) => h.name === "Subject")) === null || _g === void 0 ? void 0 : _g.value) ||
                     "",
-                isScheduleRequest,
+                isScheduleRequest: true,
                 gptAnswer,
                 times: aggregatedTimes,
             });
