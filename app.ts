@@ -6,6 +6,7 @@
 // [START run_pubsub_server_setup]
 import express from "express";
 import { DateTime } from "luxon";
+import { performance } from "perf_hooks";
 import {
   getAccessToken,
   getCalendarsForUser,
@@ -43,6 +44,7 @@ app.use(express.json());
 // [START cloudrun_pubsub_handler]
 // [START run_pubsub_handler]
 app.post("/", async (req, res) => {
+  const start = performance.now();
   if (!req.body) {
     const msg = "no Pub/Sub message received";
     console.error(`error: ${msg}`);
@@ -214,7 +216,8 @@ app.post("/", async (req, res) => {
     }
   }
   console.log("Done calling functions");
-
+  const end = performance.now();
+  console.log("Time to process emails in seconds", (end - start) / 1000);
   res.status(204).send();
 });
 

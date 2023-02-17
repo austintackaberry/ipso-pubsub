@@ -10,6 +10,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // [START run_pubsub_server_setup]
 const express_1 = __importDefault(require("express"));
 const luxon_1 = require("luxon");
+const perf_hooks_1 = require("perf_hooks");
 const calendars_1 = require("./src/lib/calendars");
 const gmail_1 = require("./src/lib/gmail");
 const openai_1 = require("./src/lib/openai");
@@ -32,6 +33,7 @@ app.use(express_1.default.json());
 // [START run_pubsub_handler]
 app.post("/", async (req, res) => {
     var _a, _b, _c, _d, _e, _f, _g;
+    const start = perf_hooks_1.performance.now();
     if (!req.body) {
         const msg = "no Pub/Sub message received";
         console.error(`error: ${msg}`);
@@ -177,6 +179,8 @@ app.post("/", async (req, res) => {
         }
     }
     console.log("Done calling functions");
+    const end = perf_hooks_1.performance.now();
+    console.log("Time to process emails in seconds", (end - start) / 1000);
     res.status(204).send();
 });
 app.get("/", (req, res) => {
