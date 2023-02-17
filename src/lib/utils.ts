@@ -103,7 +103,7 @@ export const shouldCombineDatetimes = (a: DateRange, b: DateRange): boolean => {
 export const doneAggregating = (availability: DateRange[]): boolean => {
   let res = true;
   const sortedAvailability = availability.sort((a, b) =>
-    a.start < a.end ? -1 : 1
+    a.start < b.start ? -1 : 1
   );
   return sortedAvailability.every((as, i) => {
     const next = sortedAvailability[i + 1];
@@ -121,7 +121,7 @@ export const combineDateRanges = (a: DateRange, b: DateRange): DateRange => {
 };
 
 export const aggregateTimes = (dr: DateRange[]): DateRange[] => {
-  let aggregatedDateRange = dr.sort((a, b) => (a.start < a.end ? -1 : 1));
+  let aggregatedDateRange = dr.sort((a, b) => (a.start < b.start ? -1 : 1));
   while (!doneAggregating(aggregatedDateRange)) {
     for (let i = 0; i < aggregatedDateRange.length - 1; i++) {
       const first = aggregatedDateRange[i];
