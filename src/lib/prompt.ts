@@ -225,7 +225,7 @@ We want to figure out a reasonable response for Austin given the thread above an
 ---Austin's response starts here---
 Hey Harry,
 
-I'm available tomorrow between 8AM and 11AM. Let me know if that works for you.
+I'm available tomorrow between 8am and 11am. Let me know if that works for you.
 ---Austin's response ends here---
 
 Today is Thursday February 16, 2023.
@@ -239,7 +239,7 @@ We want to figure out a reasonable response for Austin given the thread above an
 ---Austin's response starts here---
 Hey Haefa,
 
-That works! How about 10AM?
+That works! How about 10am?
 ---Austin's response ends here---
 
 Today is Monday March 6, 2023.
@@ -253,7 +253,7 @@ We want to figure out a reasonable response for Sam given the thread above and S
 ---Sam's response starts here---
 Hey Matt,
 
-Tuesday works for me. How about 7PM?
+Tuesday works for me. How about 7pm?
 ---Sam's response ends here---
 
 Today is Monday March 6, 2023.
@@ -278,10 +278,10 @@ We want to figure out a reasonable response for Austin given the thread above an
 Hey Jill,
 
 I'm free the following times:
-- Tuesday 6/5 10AM to 11AM
-- Wednesday 6/6 2PM to 3PM
-- Thursday 6/7 1PM to 3PM
-- Friday 6/8 4PM to 5PM
+- Tuesday 6/5 10-11am
+- Wednesday 6/6 2-3pm
+- Thursday 6/7 1-3pm
+- Friday 6/8 4-5pm
 
 Let me know if any of those times work for you.
 ---Austin's response ends here---
@@ -308,8 +308,8 @@ We want to figure out a reasonable response for Austin given the thread above an
 Hey Jill,
 
 I'm available next week at these times:
-- Thursday 11AM-3PM PST and 5PM-6PM PST
-- Friday 3PM-6PM PST
+- Thursday 11am-3pm and 5-6pm PST
+- Friday 3-6pm PST
 
 Let me know if any of those times work for you.
 ---Austin's response ends here---
