@@ -159,9 +159,14 @@ app.post("/", async (req, res) => {
             console.log("get raw gpt");
             const resAnswer = await (0, openai_1.getRawGpt)(emailToSendPrompt, "---Austin's response starts here---");
             const reply = resAnswer === null || resAnswer === void 0 ? void 0 : resAnswer.split("---Austin's response ends here---")[0];
-            // TODO: Create a draft email with the times
-            console.log("create gmail draft");
-            await (0, utils_1.createGmailDraft)(accessToken, res.data.threadId || "", emailAddress, fromEmail || "", reply || "");
+            // console.log("create gmail draft");
+            // await createGmailDraft(
+            //   accessToken,
+            //   res.data.threadId || "",
+            //   emailAddress,
+            //   fromEmail || "",
+            //   reply || ""
+            // );
             // save reply to db in emails table for a given emailId
             console.log("save reply to db");
             const { data: emailData, error: emailError } = await supabase_1.publicSupabase

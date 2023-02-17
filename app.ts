@@ -191,15 +191,14 @@ app.post("/", async (req, res) => {
         "---Austin's response starts here---"
       );
       const reply = resAnswer?.split("---Austin's response ends here---")[0];
-      // TODO: Create a draft email with the times
-      console.log("create gmail draft");
-      await createGmailDraft(
-        accessToken,
-        res.data.threadId || "",
-        emailAddress,
-        fromEmail || "",
-        reply || ""
-      );
+      // console.log("create gmail draft");
+      // await createGmailDraft(
+      //   accessToken,
+      //   res.data.threadId || "",
+      //   emailAddress,
+      //   fromEmail || "",
+      //   reply || ""
+      // );
       // save reply to db in emails table for a given emailId
       console.log("save reply to db");
       const { data: emailData, error: emailError } = await publicSupabase
