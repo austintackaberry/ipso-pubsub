@@ -10,6 +10,7 @@ const toEmailDb = (email) => {
         user_id: email.userId,
         is_schedule_request: email.isScheduleRequest,
         gpt_answer: JSON.stringify(email.gptAnswer),
+        times: JSON.stringify(email.times),
     };
 };
 exports.toEmailDb = toEmailDb;

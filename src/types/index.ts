@@ -26,6 +26,7 @@ export interface Email {
   userId: string;
   isScheduleRequest: boolean;
   gptAnswer: DateAnswer[];
+  times: DateRange[];
 }
 
 export interface EmailDb {
@@ -36,6 +37,7 @@ export interface EmailDb {
   user_id: string;
   is_schedule_request: boolean;
   gpt_answer: string;
+  times: string;
 }
 
 export interface DateRange {

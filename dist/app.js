@@ -116,6 +116,11 @@ app.post("/", async (req, res) => {
                 console.log("Email already in db");
                 continue;
             }
+            console.log("Getting calendar data");
+            const events = await getCalendarData(userId, accessToken);
+            console.log("finding times");
+            console.log(JSON.stringify({ events, gptAnswer }));
+            const times = (0, utils_1.findTimes)(events, gptAnswer);
             const emailDb = (0, schema_1.toEmailDb)({
                 userId,
                 emailId,
@@ -125,15 +130,11 @@ app.post("/", async (req, res) => {
                     "",
                 isScheduleRequest,
                 gptAnswer,
+                times,
             });
             console.log("Saving email to db");
             const emailRes = await (0, supabase_1.createEmailRecord)(emailDb);
             console.log("Saved email to db");
-            console.log("Getting calendar data");
-            const events = await getCalendarData(userId, accessToken);
-            console.log("finding times");
-            console.log(JSON.stringify({ events, gptAnswer }));
-            const times = (0, utils_1.findTimes)(events, gptAnswer);
             console.log("received times", JSON.stringify({ times }));
             console.log("aggregating times");
             const aggregatedTimes = (0, utils_1.aggregateTimes)(times);

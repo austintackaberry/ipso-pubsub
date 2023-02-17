@@ -133,6 +133,11 @@ app.post("/", async (req, res) => {
         continue;
       }
 
+      console.log("Getting calendar data");
+      const events = await getCalendarData(userId, accessToken);
+      console.log("finding times");
+      console.log(JSON.stringify({ events, gptAnswer }));
+      const times = findTimes(events, gptAnswer);
       const emailDb = toEmailDb({
         userId,
         emailId,
@@ -143,15 +148,11 @@ app.post("/", async (req, res) => {
           "",
         isScheduleRequest,
         gptAnswer,
+        times,
       });
       console.log("Saving email to db");
       const emailRes = await createEmailRecord(emailDb);
       console.log("Saved email to db");
-      console.log("Getting calendar data");
-      const events = await getCalendarData(userId, accessToken);
-      console.log("finding times");
-      console.log(JSON.stringify({ events, gptAnswer }));
-      const times = findTimes(events, gptAnswer);
       console.log("received times", JSON.stringify({ times }));
       console.log("aggregating times");
       const aggregatedTimes = aggregateTimes(times);
