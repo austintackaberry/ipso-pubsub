@@ -270,6 +270,18 @@ I'm free early next week. How about Tuesday?
 
 Today is Monday June 4, 2023.
 ---Email thread starts here---
+Jill Wright: Are you free to chat next week? I’m free most mornings before 10am, except Tuesday.
+---Email thread ends here---
+Austin Porter is available these times: No available times
+We want to figure out a reasonable response for Austin given the thread above and Austin's availability with the ultimate goal of scheduling a meeting.
+---Austin's response starts here---
+Hey Jill,
+
+I'm not available next week before 10am. Can we try for the following week?
+---Austin's response ends here---
+
+Today is Monday June 4, 2023.
+---Email thread starts here---
 Jill Wright: Hey Austin, when are you availabile this week? Trying to find time to chat about the new project.
 ---Email thread ends here---
 Austin Porter is available these times: Tuesday June 5, 2023 10AM to 11AM, Wednesday June 6, 2023 2PM to 3PM, Thursday June 7, 2023 1PM to 3PM, Friday June 8, 2023 4PM to 5PM
