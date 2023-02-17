@@ -121,6 +121,9 @@ app.post("/", async (req, res) => {
             console.log("finding times");
             console.log(JSON.stringify({ events, gptAnswer }));
             const times = (0, utils_1.findTimes)(events, gptAnswer);
+            console.log("received times", JSON.stringify({ times }));
+            console.log("aggregating times");
+            const aggregatedTimes = (0, utils_1.aggregateTimes)(times);
             const emailDb = (0, schema_1.toEmailDb)({
                 userId,
                 emailId,
@@ -130,14 +133,11 @@ app.post("/", async (req, res) => {
                     "",
                 isScheduleRequest,
                 gptAnswer,
-                times,
+                times: aggregatedTimes,
             });
             console.log("Saving email to db");
-            const emailRes = await (0, supabase_1.createEmailRecord)(emailDb);
+            await (0, supabase_1.createEmailRecord)(emailDb);
             console.log("Saved email to db");
-            console.log("received times", JSON.stringify({ times }));
-            console.log("aggregating times");
-            const aggregatedTimes = (0, utils_1.aggregateTimes)(times);
             console.log("received aggregated times", JSON.stringify({ aggregatedTimes }));
             const formattedTimes = aggregatedTimes
                 .map(({ start, end }) => {
