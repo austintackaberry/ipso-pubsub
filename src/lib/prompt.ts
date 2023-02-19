@@ -1,7 +1,8 @@
 import { DateTime } from "luxon";
+import { PromptInput } from "../types";
 
-export const getPrompt = (email: string) => {
-  return `Email: hey, how are you? just reaching out to see if you're interested in buying my product
+export const isScheduleRequestPromptInput: PromptInput = {
+  template: `Email: hey, how are you? just reaching out to see if you're interested in buying my product
 This email warrants a response that includes offering times to meet (yes or no): no
 
 Email: hi, we should catch up. how about next week?
@@ -13,14 +14,13 @@ This email warrants a response that includes offering times to meet (yes or no):
 Email: Hi there, I am selling a product. Do you want to chat some time to discuss?
 This email warrants a response that includes offering times to meet (yes or no): yes
 
-Email: ${email}
-This email warrants a response that includes offering times to meet (yes or no):`;
+Email: {{email}}
+This email warrants a response that includes offering times to meet (yes or no):`,
+  vars: ["email"],
 };
 
-export const getLangPrompt = (
-  q: string,
-  d: Date
-) => `Question: Today is Monday January 23, 2023. Want to get coffee some time next week? I'm busy on Tuesday.
+export const emailToTimesJsonPromptInput: PromptInput = {
+  template: `Question: Today is Monday January 23, 2023. Want to get coffee some time next week? I'm busy on Tuesday.
   
   Let's work this out in a step by step way to be sure we have the right answer.
   Are follow up questions needed here: Yes.
@@ -203,11 +203,10 @@ export const getLangPrompt = (
   So the final answer in English is: Friday February 17, 2023 9AM to 3PM.
   And the final answer in json is: [{"start_date": "February 17, 2023", "end_date": "February 17, 2023", "start_time": "9:00 AM", "end_time": "3:00 PM"}]
 
-  Question: Today is ${DateTime.fromJSDate(d)
-    .setZone("America/Los_Angeles")
-    .toFormat("cccc LLLL d, yyyy")}. ${q}
-  
-  `;
+  Question: Today is {{date}}. {{email}}
+  `,
+  vars: ["date", "email"],
+};
 
 export const getEmailToSendPrompt = (
   d: Date,
@@ -371,4 +370,163 @@ ${emailThread}
 Austin is available these times: ${formattedDates || "No available times"}
 ---Austin's response starts here---
 `;
+};
+
+export const emailGenerationPromptInput = {
+  template: `Today is Wednesday November 15, 2023.
+  ---Email thread starts here---
+  Harry Brown: Hey do you want to grab coffee sometime this week?
+  Austin Johnson: Yeah sure. When are you free?
+  Harry Brown: How about tomorrow?
+  ---Email thread ends here---
+  Austin is available these times: Thursday November 15, 2023 8AM to 11AM
+  We want to figure out a reasonable response for Austin given the thread above and Austin's availability with the ultimate goal of scheduling a meeting.
+  ---Austin's response starts here---
+  Hey Harry,
+  
+  I'm available tomorrow between 8am and 11am. Let me know if that works for you.
+  ---Austin's response ends here---
+  
+  Today is Thursday February 16, 2023.
+  ---Email thread starts here---
+  Haefa Jackson: Hey when do you want to do our 1-1?
+  Austin Brown: I'm free early next week
+  Haefa Jackson: How about monday? Maybe in the morning since I'm busy in the afternoon
+  ---Email thread ends here---
+  Austin is available these times: Monday February 20, 2023 10AM to 11AM
+  We want to figure out a reasonable response for Austin given the thread above and Austin's availability with the ultimate goal of scheduling a meeting.
+  ---Austin's response starts here---
+  Hey Haefa,
+  
+  That works! How about 10am?
+  ---Austin's response ends here---
+  
+  Today is Monday March 6, 2023.
+  ---Email thread starts here---
+  Matt Jones: Hey Sam, want to grab drinks next week?
+  Sam Stone: Yeah, let's do it. I should be free Tuesday or Wednesday
+  Matt Jones: How about Tuesday?
+  ---Email thread ends here---
+  Sam Stone is available these times: Tuesday March 14, 2023 7PM to 10PM
+  We want to figure out a reasonable response for Sam given the thread above and Sam's availability with the ultimate goal of scheduling a meeting.
+  ---Sam's response starts here---
+  Hey Matt,
+  
+  Tuesday works for me. How about 7pm?
+  ---Sam's response ends here---
+  
+  Today is Monday March 6, 2023.
+  ---Email thread starts here---
+  Michael Scott: Hey Sam, want to grab drinks next week?
+  ---Email thread ends here---
+  Sam Stone is available these times: Monday March 13, 2023 7PM to 10PM, Tuesday March 14, 2023 7PM to 10PM, Wednesday March 14, 2023 7PM to 10PM
+  We want to figure out a reasonable response for Sam given the thread above and Sam's availability with the ultimate goal of scheduling a meeting.
+  ---Sam's response starts here---
+  Hey Michael,
+  
+  I'm free early next week. How about Tuesday?
+  ---Sam's response ends here---
+  
+  Today is Monday June 4, 2023.
+  ---Email thread starts here---
+  Jill Wright: Are you free to chat next week? I’m free most mornings before 10am, except Tuesday.
+  ---Email thread ends here---
+  Austin Porter is available these times: No available times
+  We want to figure out a reasonable response for Austin given the thread above and Austin's availability with the ultimate goal of scheduling a meeting.
+  ---Austin's response starts here---
+  Hey Jill,
+  
+  I'm not available next week before 10am. Can we try for the following week?
+  ---Austin's response ends here---
+  
+  Today is Friday February 17, 2023.
+  ---Email thread starts here---
+  Haefa Mansour: Let’s get a 1:1 on the calendar. I’m open Tuesday from 8am-9am and 1-1:30pm and Wednesday from 3-3:30pm. Do any of those times work for you?
+  ---Email thread ends here---
+  Austin Porter is available these times: Tuesday February 21, 2023 8AM to 9AM, Wednesday February 22, 2023 3PM to 3:30PM
+  We want to figure out a reasonable response for Austin given the thread above and Austin's availability with the ultimate goal of scheduling a meeting.
+  ---Austin's response starts here---
+  Hey Haefa,
+  
+  Tuesday at 8am works for me. Let's meet then.
+  ---Austin's response ends here---
+  
+  Today is Friday February 17, 2023.
+  ---Email thread starts here---
+  Haefa Mansour: We should set up a time to chat. I’m open Tuesday from 1-1:30pm and Wednesday from 3-3:30pm. Do any of those times work for you?
+  ---Email thread ends here---
+  Austin Porter is available these times: Tuesday February 21, 2023 1PM to 1:30PM, Wednesday February 22, 2023 3PM to 3:30PM
+  We want to figure out a reasonable response for Austin given the thread above and Austin's availability with the ultimate goal of scheduling a meeting.
+  ---Austin's response starts here---
+  Hey Haefa,
+  
+  Tuesday at 1pm works for me. Let's meet then.
+  ---Austin's response ends here---
+  
+  Today is Monday February 27, 2023.
+  ---Email thread starts here---
+  Haefa Mansour: Do you want to grab coffee tomorrow? I'm free 10-11am and 1-2pm.
+  ---Email thread ends here---
+  Austin Brown is available these times: Tuesday February 28, 2023 10AM to 11AM, Wednesday February 28, 2023 1PM to 2PM
+  We want to figure out a reasonable response for Austin given the thread above and Austin's availability with the ultimate goal of scheduling a meeting.
+  ---Austin's response starts here---
+  Hey Haefa,
+  
+  Tuesday at 10am sounds perfect. See you then.
+  ---Austin's response ends here---
+  
+  Today is Monday June 4, 2023.
+  ---Email thread starts here---
+  Jill Wright: Hey Austin, when are you availabile this week? Trying to find time to chat about the new project.
+  ---Email thread ends here---
+  Austin Porter is available these times: Tuesday June 5, 2023 10AM to 11AM, Wednesday June 6, 2023 2PM to 3PM, Thursday June 7, 2023 1PM to 3PM, Friday June 8, 2023 4PM to 5PM
+  We want to figure out a reasonable response for Austin given the thread above and Austin's availability with the ultimate goal of scheduling a meeting.
+  ---Austin's response starts here---
+  Hey Jill,
+  
+  I'm free the following times:
+  - Tuesday 6/5 10-11am
+  - Wednesday 6/6 2-3pm
+  - Thursday 6/7 1-3pm
+  - Friday 6/8 4-5pm
+  
+  Let me know if any of those times work for you.
+  ---Austin's response ends here---
+  
+  Today is Monday June 4, 2023.
+  ---Email thread starts here---
+  Jill Wright: Hey Austin, are you available tomorrow for a call?
+  ---Email thread ends here---
+  Austin Porter is available these times: No available times
+  We want to figure out a reasonable response for Austin given the thread above and Austin's availability with the ultimate goal of scheduling a meeting.
+  ---Austin's response starts here---
+  Hey Jill,
+  
+  Tomorrow doesn't work for me. Can we try some other time?
+  ---Austin's response ends here---
+  
+  Today is Thursday February 16, 2023.
+  ---Email thread starts here---
+  Jill Wright: hey what is your availability next week? would like to fit in our 1-1. maybe some time later in the week?
+  ---Email thread ends here---
+  Austin Porter is available these times: Thursday February 23, 2023 11AM to 3PM, Thursday February 23, 2023 5PM to 6PM, Friday February 24, 2023 3PM to 6PM
+  We want to figure out a reasonable response for Austin given the thread above and Austin's availability with the ultimate goal of scheduling a meeting.
+  ---Austin's response starts here---
+  Hey Jill,
+  
+  I'm available next week at these times:
+  - Thursday 11am-3pm and 5-6pm PST
+  - Friday 3-6pm PST
+  
+  Let me know if any of those times work for you.
+  ---Austin's response ends here---
+  
+  Today is {{date}}.
+  ---Email thread starts here---
+  {{emailThread}}}
+  ---Email thread ends here---
+  Austin is available these times: {{formattedDates}}
+  ---Austin's response starts here---
+  `,
+  vars: ["date", "emailThread", "formattedDates"],
 };

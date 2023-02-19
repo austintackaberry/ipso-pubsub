@@ -13,8 +13,12 @@ import {
   getGoogleEvents,
 } from "./src/lib/calendars";
 import { getEmails, getGmail } from "./src/lib/gmail";
-import { getIsScheduleRequest, getGpt, getRawGpt } from "./src/lib/openai";
 import { getEmailToSendPrompt } from "./src/lib/prompt";
+import {
+  runEmailGeneration,
+  runEmailToTimesJson,
+  runIsScheduleRequest,
+} from "./src/lib/promptable";
 import { toEmailDb } from "./src/lib/schema";
 import {
   createEmailRecord,
@@ -108,15 +112,20 @@ app.post("/", async (req, res) => {
       }
       console.log("Got email");
       console.log(res.data.snippet);
-      // console.log("Determining if schedule request");
-      // const isScheduleRequest = await getIsScheduleRequest(res.data.snippet);
-      // console.log("isScheduleRequest", isScheduleRequest);
-      // if (!isScheduleRequest) {
-      //   console.log("Not a scheduling request, skipping...");
-      //   continue;
-      // }
+      console.log("Determining if schedule request");
+      const isScheduleRequest = await runIsScheduleRequest(
+        res.data.snippet || ""
+      );
+      console.log("isScheduleRequest", isScheduleRequest);
+      if (!isScheduleRequest) {
+        console.log("Not a scheduling request, skipping...");
+        continue;
+      }
       console.log("Found scheduling request, running GPT-3");
-      const gptAnswer = await getGpt(res.data.snippet || "");
+      const gptAnswer = await runEmailToTimesJson(
+        res.data.snippet || "",
+        new Date()
+      );
       console.log(JSON.stringify({ gptAnswer }));
       // get from email address
       const fromEmail = res.data.payload?.headers?.find(
@@ -180,25 +189,20 @@ app.post("/", async (req, res) => {
       console.log("Received email thread");
       console.log(JSON.stringify({ emailThread }));
       console.log("Getting email to send prompt");
-      const emailToSendPrompt = getEmailToSendPrompt(
+      const resAnswer = await runEmailGeneration(
         new Date(),
-        formattedTimes,
-        emailThread
-      );
-      console.log("get raw gpt");
-      const resAnswer = await getRawGpt(
-        emailToSendPrompt,
-        "---Austin's response starts here---"
+        emailThread,
+        formattedTimes
       );
       const reply = resAnswer?.split("---Austin's response ends here---")[0];
       // console.log("create gmail draft");
-      // await createGmailDraft(
-      //   accessToken,
-      //   res.data.threadId || "",
-      //   emailAddress,
-      //   fromEmail || "",
-      //   reply || ""
-      // );
+      await createGmailDraft(
+        accessToken,
+        res.data.threadId || "",
+        emailAddress,
+        fromEmail || "",
+        reply || ""
+      );
       // save reply to db in emails table for a given emailId
       console.log("save reply to db");
       const { data: emailData, error: emailError } = await publicSupabase

@@ -49,3 +49,8 @@ export interface DateTimeRange {
   start: DateTime;
   end: DateTime;
 }
+
+export interface PromptInput {
+  template: string;
+  vars: string[];
+}
