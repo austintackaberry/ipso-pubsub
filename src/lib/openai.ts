@@ -32,7 +32,7 @@ export const getGpt = async (email: string) => {
     model: "text-davinci-003",
     prompt,
     temperature: 0,
-    max_tokens: 350,
+    max_tokens: 400,
     top_p: 1,
   });
   const resultArr = response.data.choices[0].text?.split(
@@ -49,7 +49,7 @@ export const getRawGpt = async (prompt: string, splitText: string) => {
     model: "text-davinci-003",
     prompt,
     temperature: 0,
-    max_tokens: 350,
+    max_tokens: 400,
     top_p: 1,
   });
   console.log(JSON.stringify(response.data.choices));
