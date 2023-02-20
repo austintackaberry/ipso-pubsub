@@ -21,26 +21,31 @@ const runCompletion = async (
   const prompt = new Prompt(promptTemplate, Object.keys(inputs));
 
   const promptText = prompt.format(inputs);
-
   const output = await openai.generate(promptText, options);
-
+  console.log(JSON.stringify({ promptText, output }));
   return extractionFn(output);
 };
 
-export const runIsScheduleRequest = (email: string) => {
+export const runIsScheduleRequest = async (email: string) => {
+  console.log(JSON.stringify({ email }));
   const promptTemplate = isScheduleRequestPromptInput.template;
   const inputs = { email };
   const options = {
     model: "text-davinci-003",
-    prompt,
     temperature: 0,
     max_tokens: 5,
     top_p: 1,
-    stop: "\n",
   };
   const extractionFn = (completion: string) =>
     completion.includes("yes") ? true : false;
-  return runCompletion(promptTemplate, inputs, extractionFn, options);
+  const res = await runCompletion(
+    promptTemplate,
+    inputs,
+    extractionFn,
+    options
+  );
+  console.log(JSON.stringify({ email, res, promptTemplate, inputs, options }));
+  return res;
 };
 
 export const runEmailToTimesJson = (email: string, d: Date) => {
@@ -53,7 +58,6 @@ export const runEmailToTimesJson = (email: string, d: Date) => {
   };
   const options = {
     model: "text-davinci-003",
-    prompt,
     temperature: 0,
     max_tokens: 400,
     top_p: 1,
@@ -83,7 +87,6 @@ export const runEmailGeneration = async (
   };
   const options = {
     model: "text-davinci-003",
-    prompt,
     temperature: 0,
     max_tokens: 400,
     top_p: 1,

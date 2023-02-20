@@ -127,10 +127,6 @@ app.post("/", async (req, res) => {
         new Date()
       );
       console.log(JSON.stringify({ gptAnswer }));
-      // get from email address
-      const fromEmail = res.data.payload?.headers?.find(
-        (h) => h.name === "From"
-      )?.value;
 
       const emailId = res.data.id || "";
       // continue if email is already in db
@@ -195,14 +191,6 @@ app.post("/", async (req, res) => {
         formattedTimes
       );
       const reply = resAnswer?.split("---Austin's response ends here---")[0];
-      // console.log("create gmail draft");
-      await createGmailDraft(
-        accessToken,
-        res.data.threadId || "",
-        emailAddress,
-        fromEmail || "",
-        reply || ""
-      );
       // save reply to db in emails table for a given emailId
       console.log("save reply to db");
       const { data: emailData, error: emailError } = await publicSupabase
